@@ -173,6 +173,34 @@ dotenv.config({ path: "../graph-explorer/.env" });
     }
   });
 
+  app.get("/pg/statistics/summary", async (req, res, next) => {
+    let response;
+    let data;
+    try {
+      response = await retryFetch(`${req.headers["graph-db-connection-url"]}/pg/statistics/summary`, undefined, undefined, req, "gremlin").then((res) => res)
+
+      data = await response.json();
+      res.send(data);
+    } catch (error) {
+      next(error);
+      console.log(error);
+    }
+  });
+
+  app.get("/rdf/statistics/summary", async (req, res, next) => {
+    let response;
+    let data;
+    try {
+      response = await retryFetch(`${req.headers["graph-db-connection-url"]}/rdf/statistics/summary`, undefined, undefined, req, "gremlin").then((res) => res)
+
+      data = await response.json();
+      res.send(data);
+    } catch (error) {
+      next(error);
+      console.log(error);
+    }
+  });
+
   if (process.env.PROXY_SERVER_HTTPS_CONNECTION != "false" && fs.existsSync("../graph-explorer-proxy-server/cert-info/server.key") && fs.existsSync("../graph-explorer-proxy-server/cert-info/server.crt")) {
     https
       .createServer(
